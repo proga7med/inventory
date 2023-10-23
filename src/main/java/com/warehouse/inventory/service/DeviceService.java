@@ -8,10 +8,16 @@ import java.util.List;
 
 public interface DeviceService {
     Device createDevice(Device device);
+
     List<Device> getDevices();
+
     List<Device> getDevicesOrderByPinAsc();
+
     Device getDeviceById(int id) throws DeviceNotFoundException;
+
     Device updateDevice(int id, Device device) throws DeviceNotFoundException;
+
     boolean deleteDevice(int id);
-    void configure(Device device) throws DeviceConfigurationException;
+
+    Device configure(Device device) throws DeviceConfigurationException;
 }

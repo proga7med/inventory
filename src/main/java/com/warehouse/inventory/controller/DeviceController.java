@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/devices")
+@RequestMapping("/api")
 public class DeviceController {
     private final DeviceService deviceService;
 
@@ -22,8 +22,9 @@ public class DeviceController {
     }
 
     @GetMapping("/devices")
-    public List<Device> getDevices() {
-        return deviceService.getDevicesOrderByPinAsc();
+    public ResponseEntity<List<Device>> getDevices() {
+        List<Device> devices = deviceService.getDevicesOrderByPinAsc();
+        return ResponseEntity.ok().body(devices);
     }
 
     @GetMapping("/devices/{id}")
@@ -33,15 +34,15 @@ public class DeviceController {
     }
 
     @PostMapping("/devices")
-    public Device createDevice(@RequestBody Device device) {
-        return deviceService.createDevice(device);
+    public ResponseEntity<Device> createDevice(@RequestBody Device device) {
+        Device createdDevice = deviceService.createDevice(device);
+        return new ResponseEntity<>(createdDevice, HttpStatus.CREATED);
     }
 
     @PutMapping("/devices/{id}")
     public ResponseEntity<Device> updateDevice(@PathVariable(value = "id") int deviceId, @RequestBody Device deviceDetails) throws DeviceNotFoundException {
-        Device device = deviceService.getDeviceById(deviceId);
-        Device updatedDevice = deviceService.updateDevice(deviceId, device);
-        return ResponseEntity.ok(updatedDevice);
+        Device updatedDevice = deviceService.updateDevice(deviceId, deviceDetails);
+        return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
     }
 
     @DeleteMapping("/devices/{id}")
@@ -51,9 +52,9 @@ public class DeviceController {
     }
 
     @PutMapping("/devices/{id}/configure")
-    public ResponseEntity<Void> configureDevice(@PathVariable(value = "id") int deviceId) throws DeviceNotFoundException, DeviceConfigurationException {
+    public ResponseEntity<Device> configureDevice(@PathVariable(value = "id") int deviceId) throws DeviceNotFoundException, DeviceConfigurationException {
         Device device = deviceService.getDeviceById(deviceId);
-        deviceService.configure(device);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Device configuredDevice = deviceService.configure(device);
+        return new ResponseEntity<>(configuredDevice, HttpStatus.OK);
     }
 }

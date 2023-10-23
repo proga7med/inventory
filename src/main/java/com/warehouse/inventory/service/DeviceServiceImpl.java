@@ -55,7 +55,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public void configure(Device device) throws DeviceConfigurationException {
+    public Device configure(Device device) throws DeviceConfigurationException {
         if (device.getStatus() == Device.Status.ACTIVE) {
             throw new DeviceConfigurationException(String.format("Device %d is already configured", device.getId()));
         }
@@ -63,5 +63,7 @@ public class DeviceServiceImpl implements DeviceService {
         int temperature = random.nextInt(10) + 1;
         device.setTemperature(temperature);
         device.setStatus(Device.Status.ACTIVE);
+
+        return device;
     }
 }
